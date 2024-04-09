@@ -1,3 +1,6 @@
 *ipynb_checkpoints
 *BM-A-pt3
 *quiz-tatabahasa.jsonl
+
+.DS_Store
+*.pbs

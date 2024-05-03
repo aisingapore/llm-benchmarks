@@ -7,7 +7,7 @@ RUN apt-get update && \
         git \
         wget
 
-RUN git clone -b feat-docker https://github.com/aisingapore/IndoMMLU.git indommlu
+RUN git clone -b feat-docker https://github.com/aisingapore/llm-benchmarks.git llm_benchmarks
 WORKDIR /workspace/llm_benchmarks
 RUN wget \
     https://raw.githubusercontent.com/mesolitica/malaysian-dataset/eb740445ad13857278d47cc17636b515aa339fbd/llm-benchmark/BM-pt3/BM-A-pt3 \

@@ -20,8 +20,8 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_path", type=str, help="Path to pretrained model", required=True)
     parser.add_argument("--name", type=str,help="Output File Name", default="model_name", required=True)
-    parser.add_argument("--run_full", type=bool, help="run 0, 1, 3 shots", action = "store_true")
-    parser.add_argument("--no_tqdm", type=bool, help='whether to disable tqdm', action = "store_true")
+    parser.add_argument("--run_full", help="run 0, 1, 3 shots", action = "store_true")
+    parser.add_argument("--tqdm", help='whether to run tqdm', action = "store_true")
     parser.add_argument("--output_folder", type=str, default="output")
     args = parser.parse_args()
     return args
@@ -161,6 +161,9 @@ def main():
     config['full_run'] = args.run_full
     config['timestamp'] = timestamp
     
+    if not args.run_full:
+        print("The recent change sets the default value of run_full to `False`, if this is not intended "
+              "run `evaluate.py` with `--run_full`")
 
     qns_ttbhs = read_ttbhs()
     qns_bmpt3 = read_bmpt3()

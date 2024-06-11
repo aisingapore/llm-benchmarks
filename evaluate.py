@@ -236,8 +236,11 @@ def main():
             conf = {"config": config}
             merged = {**data, **conf}
             json.dump(merged, fopen, indent=4)
-    
-    print(scores)
+    try:
+        import pandas as pd
+        print(pd.DataFrame(scores).to_markdown())
+    except ImportError:
+        print(scores)
 
 if __name__ == "__main__":
     main()

@@ -16,6 +16,8 @@ if torch.cuda.is_available():
 else:
     device = "cpu"
 
+# TODO: Convert prints to logs
+
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_path", type=str, help="Path to pretrained model", required=True)
@@ -45,7 +47,7 @@ def read_ttbhs() -> List[Dict]:
                 'jawapan': jawapan,
             }
             questions.append(data)
-    print(f"Running {len(questions)} questions")
+    print(f"TTBHS: Running {len(questions)} questions")
     return questions
 
 def read_bmpt3() -> List[Dict]:
@@ -66,7 +68,7 @@ def read_bmpt3() -> List[Dict]:
             'jawapan': jawapan,
         }
         questions.append(data)
-    
+    print(f"BM-A-PT3: Running {len(questions)} questions")
     return questions
 
 def convert_prompt(row, answer = False) -> str:

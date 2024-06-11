@@ -20,8 +20,8 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_path", type=str, help="Path to pretrained model", required=True)
     parser.add_argument("--name", type=str,help="Output File Name", default="model_name", required=True)
-    parser.add_argument("--run_full", type=str,help="run 0, 1, 3 shots", default="true")
-    parser.add_argument("--no_tqdm", type=bool, help='whether to disable tqdm', default= False)
+    parser.add_argument("--run_full", type=bool, help="run 0, 1, 3 shots", action = "store_true")
+    parser.add_argument("--no_tqdm", type=bool, help='whether to disable tqdm', action = "store_true")
     parser.add_argument("--output_folder", type=str, default="output")
     args = parser.parse_args()
     return args

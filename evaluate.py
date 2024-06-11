@@ -84,7 +84,7 @@ jawapan:
     """
     return prompt.strip()
 
-def most_common(l):
+def most_common(l:List) -> str:
     return max(set(l), key=l.count)
 
 def evaluate(questions:List[Dict]) -> float:
@@ -96,7 +96,9 @@ def evaluate(questions:List[Dict]) -> float:
 
 def run_test(args, model, tokenizer, questions, n_shots) -> Tuple[List[Dict], float]:
 
-    for i in tqdm(range(len(questions)), leave=True, disable = args.tqdm):
+    # not args.tqdm => if true, then disable = False => enable tqdm
+    #               => if false, then disable = True => disable tqdm
+    for i in tqdm(range(len(questions)), leave=True, disable = not args.tqdm):
         prompts = []
         if n_shots:
             arange = set(range(len(questions)))
@@ -205,6 +207,7 @@ def main():
             json.dump(merged, fopen, indent=4)
     
     else: #3 shot for 5 qns - for debugging
+        #TODO: Can we remove the for loop below? 
         #tatabahasa
         for i in [3]:
             q, s = run_test(args, 

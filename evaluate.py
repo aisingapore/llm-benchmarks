@@ -96,7 +96,7 @@ def evaluate(questions:List[Dict]) -> float:
 
 def run_test(args, model, tokenizer, questions, n_shots) -> Tuple[List[Dict], float]:
 
-    for i in tqdm(range(len(questions)), leave=True, disable = args.no_tqdm):
+    for i in tqdm(range(len(questions)), leave=True, disable = args.tqdm):
         prompts = []
         if n_shots:
             arange = set(range(len(questions)))

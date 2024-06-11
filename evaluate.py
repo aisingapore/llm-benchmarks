@@ -7,6 +7,8 @@ import json
 import argparse
 import datetime
 
+from typing import List, Dict, Tuple
+
 random.seed(0)
 
 if torch.cuda.is_available():
@@ -14,18 +16,17 @@ if torch.cuda.is_available():
 else:
     device = "cpu"
 
-
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_path", type=str, help="Path to pretrained model", required=True)
     parser.add_argument("--name", type=str,help="Output File Name", default="model_name", required=True)
     parser.add_argument("--run_full", type=str,help="run 0, 1, 3 shots", default="true")
-
+    parser.add_argument("--no_tqdm", type=bool, help='whether to disable tqdm', default= False)
     parser.add_argument("--output_folder", type=str, default="output")
     args = parser.parse_args()
     return args
 
-def read_ttbhs():
+def read_ttbhs() -> List[Dict]:
     questions = []
     with open("quiz-tatabahasa.jsonl") as fopen:
         for no, l in enumerate(fopen):
@@ -47,7 +48,7 @@ def read_ttbhs():
     print(f"Running {len(questions)} questions")
     return questions
 
-def read_bmpt3():
+def read_bmpt3() -> List[Dict]:
     with open('BM-A-pt3') as fopen:
         text = fopen.read()
     
@@ -68,7 +69,7 @@ def read_bmpt3():
     
     return questions
 
-def convert_prompt(row, answer = False):
+def convert_prompt(row, answer = False) -> str:
     if answer:
         prompt = f"""
 objektif: {row['objektif']}
@@ -86,20 +87,20 @@ jawapan:
 def most_common(l):
     return max(set(l), key=l.count)
 
-def evaluate(questions):
+def evaluate(questions:List[Dict]) -> float:
     filtered = [q for q in questions if 'output' in q]
     correct = 0
     for q in filtered:
         correct += most_common(q['output']) == q['jawapan']
     return (correct / len(filtered)) * 100
 
-def run_test(args, model, tokenizer, questions, n_shots):
+def run_test(args, model, tokenizer, questions, n_shots) -> Tuple[List[Dict], float]:
 
-    for i in tqdm(range(len(questions))):
+    for i in tqdm(range(len(questions)), leave=True, disable = args.no_tqdm):
         prompts = []
         if n_shots:
             arange = set(range(len(questions)))
-            shots = random.sample(arange - {i}, n_shots)
+            shots = random.sample(sorted(arange - {i}), n_shots)
             for no, s in enumerate(shots):
                 prompts.append(f'Contoh soalan {no + 1}\n' + convert_prompt(questions[s], answer = True))
         prompts.append(convert_prompt(questions[i]))

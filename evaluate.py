@@ -155,10 +155,11 @@ def run_test(
 
         if n_shots:
             arange = set(range(len(questions)))
-            if args.deterministic:
-                shots = sorted(arange - {i})[:n_shots]
-            else:
-                shots = random.sample(sorted(arange - {i}), n_shots)
+            shots = (
+                    sorted(arange - {i})[:n_shots] # if deterministic, then use the first n_shots
+                      if args.deterministic else
+                    random.sample(sorted(arange - {i}), n_shots) # else sample n_shots
+                    )
             for no, s in enumerate(shots):
                 prompts.append(
                     f"Contoh soalan {no + 1}\n"

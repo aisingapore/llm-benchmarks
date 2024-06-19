@@ -39,7 +39,7 @@ def parse_args():
     parser.add_argument("--tqdm", help="whether to run tqdm", action="store_true")
     parser.add_argument(
         "--num_fewshots",
-        help="Number of few shots as a string etc '0,1,2'",
+        help="Number of few shots as a string etc '0,1,3'",
         default="0,1,3",
     )
     parser.add_argument("--output_folder", type=str, default="output")
@@ -47,9 +47,12 @@ def parse_args():
         "--repeat", type=int, default=5, help="Number of loops per prompt"
     )
     parser.add_argument("--limit", type=int, default=0, help="run N number of samples")
-    parser.add_argument("--device", type=str, help="device map")
+    parser.add_argument("--device", type=str, help="device map", default='cuda')
     parser.add_argument("--deterministic", help="disable sampling", action="store_true")
     args = parser.parse_args()
+    if "/" in args.name:
+        logging.warning("name should not contain /")
+        args.name = args.name.replace("/", "_")
     return args
 
 
@@ -187,7 +190,7 @@ def run_test(
                 )
 
             except Exception as e:
-                print(e, r)
+                print(e)
                 pass
         questions[i]["input_tok"] = inputs.input_ids.tolist()[0]
         questions[i]["prompt"] = prompt
@@ -214,7 +217,7 @@ def main():
         datetime.datetime.now().replace(microsecond=0).isoformat().replace(":", "_")
     )
 
-    os.makedirs(args.output_folder + "/" + timestamp, exist_ok=True)
+    os.makedirs(os.path.join(args.output_folder,timestamp), exist_ok=True)
 
     if not args.run_full:
         logger.warning(
@@ -336,12 +339,12 @@ def main():
             conf = {"config": config}
             merged = {**data, **conf}
             json.dump(merged, fopen, indent=4)
-    try:
-        import pandas as pd
+    # try:
+    #     import pandas as pd
 
-        print(pd.DataFrame(scores).to_markdown())
-    except ImportError:
-        print(scores)
+    #     print(pd.DataFrame(scores).to_markdown())
+    # except ImportError:
+    print(scores)
 
 
 if __name__ == "__main__":
